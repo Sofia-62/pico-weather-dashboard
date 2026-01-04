@@ -1,143 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Pico W Weather Station Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Pico W Weather Station Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --bg: #f4f6f9;
-            --card-bg: #ffffff;
-            --shadow: 0 10px 25px rgba(0,0,0,0.08);
-            --radius: 14px;
-        }
+<style>
+:root{
+    --primary:#1e3c72;
+    --accent:#2a5298;
+    --bg:#f4f6f9;
+    --card:#ffffff;
+    --shadow:0 12px 30px rgba(0,0,0,0.1);
+    --radius:14px;
+}
 
-        body {
-            margin: 0;
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: var(--bg);
-            color: var(--primary);
-        }
+body{
+    margin:0;
+    font-family:"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg);
+    color:#2c3e50;
+}
 
-        header {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            padding: 30px 20px;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
+header{
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+    padding:35px 20px;
+    text-align:center;
+}
 
-        header h1 {
-            margin: 0;
-            font-size: 2.2rem;
-            font-weight: 600;
-        }
+main{
+    max-width:1400px;
+    margin:auto;
+    padding:30px;
+}
 
-        header p {
-            margin-top: 8px;
-            opacity: 0.9;
-        }
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
+    gap:25px;
+}
 
-        main {
-            padding: 30px;
-            max-width: 1400px;
-            margin: auto;
-        }
+.card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:20px;
+}
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-            gap: 25px;
-        }
+.card h2{
+    margin-top:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
 
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 18px;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
+.info{
+    font-size:14px;
+    color:#555;
+    margin-bottom:10px;
+}
 
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-        }
+button{
+    background:var(--accent);
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+}
 
-        .card h2 {
-            margin: 0 0 12px 0;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+button:hover{
+    opacity:0.9;
+}
 
-        iframe {
-            width: 100%;
-            height: 260px;
-            border: none;
-            border-radius: 10px;
-        }
+.chart{
+    display:none;
+    margin-top:15px;
+}
 
-        footer {
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-            font-size: 14px;
-            color: #666;
-        }
+iframe{
+    width:100%;
+    height:260px;
+    border:none;
+    border-radius:10px;
+}
 
-        footer strong {
-            color: #2a5298;
-        }
-    </style>
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+}
+
+th{
+    background:var(--accent);
+    color:white;
+}
+
+footer{
+    text-align:center;
+    margin:40px 0;
+    font-size:14px;
+    color:#555;
+}
+</style>
 </head>
 
 <body>
 
 <header>
-    <h1>🌦️  Weather Station Dashboard</h1>
-    <p>Real-time environmental monitoring </p>
+<h1>🌦️ Smart Weather Station Dashboard</h1>
+<p>Live monitoring, analytics & visualization</p>
 </header>
 
 <main>
-    <div class="grid">
 
-        <!-- Temperature -->
-        <div class="card">
-            <h2>🌡️ Temperature (°C)</h2>
-            <iframe src="https://thingspeak.com/channels/3218142/charts/1?api_key=CD3R84AROYXS7HND&bgcolor=%23ffffff&color=%23e74c3c&dynamic=true&results=60&type=line"></iframe>
-        </div>
+<div class="grid">
 
-        <!-- Humidity -->
-        <div class="card">
-            <h2>💧 Humidity (%)</h2>
-            <iframe src="https://thingspeak.com/channels/3218142/charts/2?api_key=CD3R84AROYXS7HND&bgcolor=%23ffffff&color=%233498db&dynamic=true&results=60&type=line"></iframe>
-        </div>
+<!-- TEMPERATURE -->
+<div class="card">
+<h2>🌡️ Temperature (°C)</h2>
+<p class="info">Measures ambient temperature using the BME280 sensor. Useful for climate and comfort analysis.</p>
+<button onclick="toggle('temp')">📊 View Graph</button>
+<div id="temp" class="chart">
+<iframe src="https://thingspeak.com/channels/3218142/charts/1?api_key=CD3R84AROYXS7HND&dynamic=true&type=line"></iframe>
+</div>
+</div>
 
-        <!-- Pressure -->
-        <div class="card">
-            <h2>🌬️ Air Pressure (hPa)</h2>
-            <iframe src="https://thingspeak.com/channels/3218142/charts/3?api_key=CD3R84AROYXS7HND&bgcolor=%23ffffff&color=%232ecc71&dynamic=true&results=60&type=line"></iframe>
-        </div>
+<!-- HUMIDITY -->
+<div class="card">
+<h2>💧 Humidity (%)</h2>
+<p class="info">Indicates moisture content in the air, important for weather and environmental conditions.</p>
+<button onclick="toggle('hum')">📊 View Graph</button>
+<div id="hum" class="chart">
+<iframe src="https://thingspeak.com/channels/3218142/charts/2?api_key=CD3R84AROYXS7HND&dynamic=true&type=line"></iframe>
+</div>
+</div>
 
-        <!-- Wind Speed -->
-        <div class="card">
-            <h2>🍃 Wind Speed (rot/s)</h2>
-            <iframe src="https://thingspeak.com/channels/3218142/charts/4?api_key=CD3R84AROYXS7HND&bgcolor=%23ffffff&color=%239b59b6&dynamic=true&results=60&type=line"></iframe>
-        </div>
+<!-- PRESSURE -->
+<div class="card">
+<h2>🌬️ Air Pressure (hPa)</h2>
+<p class="info">Used to detect weather changes such as storms or clear conditions.</p>
+<button onclick="toggle('pres')">📊 View Graph</button>
+<div id="pres" class="chart">
+<iframe src="https://thingspeak.com/channels/3218142/charts/3?api_key=CD3R84AROYXS7HND&dynamic=true&type=line"></iframe>
+</div>
+</div>
 
-    </div>
+<!-- WIND -->
+<div class="card">
+<h2>🍃 Wind Speed (rot/s)</h2>
+<p class="info">Calculated using reed switch rotations to estimate wind intensity.</p>
+<button onclick="toggle('wind')">📊 View Graph</button>
+<div id="wind" class="chart">
+<iframe src="https://thingspeak.com/channels/3218142/charts/4?api_key=CD3R84AROYXS7HND&dynamic=true&type=line"></iframe>
+</div>
+</div>
+
+</div>
+
+<!-- SUMMARY TABLE -->
+<div class="card" style="margin-top:30px;">
+<h2>📊 Live Data Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Latest</th>
+<th>Min</th>
+<th>Max</th>
+<th>Average</th>
+<th>Last Updated</th>
+</tr>
+</thead>
+<tbody id="dataTable">
+<tr><td colspan="6">Loading...</td></tr>
+</tbody>
+</table>
+</div>
+
 </main>
 
 <footer>
-    <p>
-        <strong>FSKM UMT</strong> | CSM3313 Internet of Things <br>
-        Pico W Weather Monitoring System
-    </p>
+<strong>FSKM UMT</strong> | CSM3313 Internet of Things<br>
+Smart Pico W Weather Monitoring System
 </footer>
+
+<script>
+function toggle(id){
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === "block" ? "none" : "block";
+}
+
+// ====== LOAD SUMMARY DATA ======
+const CHANNEL="3218142";
+const KEY="CD3R84AROYXS7HND";
+
+async function loadData(){
+    const res=await fetch(`https://api.thingspeak.com/channels/${CHANNEL}/feeds.json?api_key=${KEY}&results=40`);
+    const data=await res.json();
+    const feeds=data.feeds;
+
+    const map={
+        "Temperature (°C)":"field1",
+        "Humidity (%)":"field2",
+        "Pressure (hPa)":"field3",
+        "Wind Speed (rot/s)":"field4"
+    };
+
+    let html="";
+    for(const [name,f] of Object.entries(map)){
+        const vals=feeds.map(x=>parseFloat(x[f])).filter(v=>!isNaN(v));
+        if(!vals.length) continue;
+
+        html+=`<tr>
+        <td>${name}</td>
+        <td>${vals.at(-1).toFixed(2)}</td>
+        <td>${Math.min(...vals).toFixed(2)}</td>
+        <td>${Math.max(...vals).toFixed(2)}</td>
+        <td>${(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2)}</td>
+        <td>${feeds.at(-1).created_at.replace("T"," ").replace("Z","")}</td>
+        </tr>`;
+    }
+    document.getElementById("dataTable").innerHTML=html;
+}
+
+loadData();
+setInterval(loadData,30000);
+</script>
 
 </body>
 </html>
